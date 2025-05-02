@@ -44,8 +44,10 @@ import DetallePago from "./src/Presentation/views/admin/DetallePago";
 import IngresoPeatonalguarda from "./src/Presentation/views/guarda/IngresoPeatonalaguarda";
 import Notiresidente from "./src/Presentation/views/residente/notificacionesresi";
 import DetallePagoresi from "./src/Presentation/views/residente/DetallePago";
-
-
+import Anunciosguarda from "./src/Presentation/views/guarda/anunciosguarda";
+import  NuevoPago from "./src/Presentation/views/admin/inpagoadmin";
+import  Anunciosadmin  from "./src/Presentation/views/admin/anunciosadmin";
+import  Anunciosresi from "./src/Presentation/views/residente/anunciosresidente";
 
 
 
@@ -88,6 +90,11 @@ export type RootStackParamList = {
     PerfilAdmin: undefined;
     IngresoPeatonalguarda: undefined;
     Notiresidente: undefined;
+    Anunciosguarda: undefined;
+    NuevoPago:undefined;
+    Anunciosadmin:undefined;
+    Anunciosresi:undefined;
+
 
     DetallePago: {
         pago: {
@@ -118,6 +125,7 @@ export type RootStackParamList = {
             PrimerApellido?: string;
         }
     };
+
 
 };
 
@@ -191,6 +199,12 @@ const App = () => {
                         component={DetallePagoresi}
                         options={{ title: 'Detalle de Pago' }}
                     />
+                    <Stack.Screen name='Anunciosguarda' component={Anunciosguarda} />
+                    <Stack.Screen name='NuevoPago' component={NuevoPago} />
+                    <Stack.Screen name='Anunciosadmin' component={Anunciosadmin} />
+                    <Stack.Screen name='Anunciosresi' component={Anunciosresi} />
+
+
 
                 </Stack.Navigator>
             </NavigationContainer>
