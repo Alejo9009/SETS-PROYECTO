@@ -35,6 +35,38 @@ app.get('/api/anuncios', (req, res) => {
     });
 });
 
+app.post('/api/anunciossubir', (req, res) => {
+    const { titulo, descripcion, persona, apart, img_anuncio } = req.body;
+    const fechaPublicacion = new Date().toISOString().split('T')[0];
+    const horaPublicacion = new Date().toLocaleTimeString();
+    
+    const query = 'INSERT INTO anuncio (titulo, descripcion, fechaPublicacion, horaPublicacion, persona, apart, img_anuncio) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    
+    db.query(query, [titulo, descripcion, fechaPublicacion, horaPublicacion, persona, apart, img_anuncio], (err, result) => {
+        if (err) {
+            console.error('Error al insertar anuncio:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ id: result.insertId, message: 'Anuncio creado exitosamente' });
+    });
+});
+
+app.delete('/api/elanuncios/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM anuncio WHERE idAnuncio = ?';
+    
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar anuncio:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Anuncio no encontrado' });
+        }
+        res.json({ message: 'Anuncio eliminado exitosamente' });
+    });
+});
+
 app.get('/api/torres', (req, res) => {
     const query = `
         SELECT numApartamento, pisos, torre 
@@ -237,9 +269,7 @@ app.get('/api/citas', (req, res) => {
         res.json(results);
     });
 });
-// Ruta para crear nueva cita
-// Ruta corregida para crear citas
-// Ruta corregida para crear citas
+
 app.post('/api/citassolicitud', (req, res) => {
     const { fechacita, horacita, tipocita, apa, estado } = req.body;
     
@@ -413,34 +443,34 @@ app.post('/api/pagos', (req, res) => {
     );
 });
 
-// Actualizar un pago
-app.put('/api/pagos/:id', (req, res) => {
-    const { id } = req.params;
-    const { pagoPor, cantidad, mediopago, apart, fechaPago, estado, referenciaPago } = req.body;
+app.put('/api/pagos/:idPagos', (req, res) => {
+    const { idPagos } = req.params;
+    const { estado } = req.body;
     
-    const query = `
-        UPDATE pagos 
-        SET 
-            pagoPor = ?,
-            cantidad = ?,
-            mediopago = ?,
-            apart = ?,
-            fechaPago = ?,
-            estado = ?,
-            referenciaPago = ?
-        WHERE idPagos = ?
-    `;
+
+    if (!['Pendiente', 'Pagado', 'Vencido'].includes(estado)) {
+        return res.status(400).json({ error: 'Estado no válido' });
+    }
+
+
+    const query = `UPDATE pagos SET estado = ? WHERE idPagos = ?`;
     
-    db.query(query, 
-        [pagoPor, cantidad, mediopago, apart, fechaPago, estado, referenciaPago, id], 
-        (err, results) => {
-            if (err) {
-                console.error('Error al actualizar pago:', err);
-                return res.status(500).json({ error: 'Error al actualizar pago' });
-            }
-            res.json({ success: true });
+    db.query(query, [estado, idPagos], (err, results) => {
+        if (err) {
+            console.error('Error al actualizar pago:', err);
+            return res.status(500).json({ 
+                error: 'Error al actualizar pago',
+                details: err.message 
+            });
         }
-    );
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pago no encontrado' });
+        }
+        res.json({ 
+            success: true,
+            message: 'Estado actualizado correctamente' 
+        });
+    });
 });
 
 // Eliminar un pago
