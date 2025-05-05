@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../../App';
 import { useNavigation } from '@react-navigation/native';
@@ -99,6 +99,65 @@ const Pagosadmin = () => {
     );
   }
 
+
+
+  const updateEstadoPago = async (idPagos: number, nuevoEstado: 'Pendiente' | 'Pagado' | 'Vencido') => {
+    try {
+
+      const response = await fetch(`http://192.168.1.105:3001/api/pagos/${idPagos}`, { 
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+  
+      if (response.ok) {
+        setPagos(pagos.map(pago => 
+          pago.idPagos === idPagos ? { ...pago, estado: nuevoEstado } : pago
+        ));
+        Alert.alert('Éxito', 'Estado del pago actualizado correctamente');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al actualizar el estado del pago');
+      }
+    } catch (error) {
+      console.error('Error updating pago:', error);
+      Alert.alert('No se pudo actualizar el estado del pago');
+
+      fetchPagos();
+    }
+  };
+
+
+  const showEstadoSelector = (idPagos: number, currentEstado: string) => {
+    Alert.alert(
+      'Cambiar estado',
+      'Seleccione el nuevo estado:',
+      [
+        {
+          text: 'Pendiente',
+          onPress: () => updateEstadoPago(idPagos, 'Pendiente'),
+          style: currentEstado === 'Pendiente' ? 'cancel' : 'default'
+        },
+        {
+          text: 'Pagado',
+          onPress: () => updateEstadoPago(idPagos, 'Pagado'),
+          style: currentEstado === 'Pagado' ? 'cancel' : 'default'
+        },
+        {
+          text: 'Vencido',
+          onPress: () => updateEstadoPago(idPagos, 'Vencido'),
+          style: currentEstado === 'Vencido' ? 'cancel' : 'default'
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        }
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -146,8 +205,8 @@ const Pagosadmin = () => {
         <View style={styles.table}>
           <View style={[styles.row, styles.headerRow]}>
             <Text style={[styles.cell, styles.headerCell, styles.firstCell]}>Tipo</Text>
-            <Text style={[styles.cell, styles.headerCell]}>Aparta</Text>
-            <Text style={[styles.cell, styles.headerCell]}>Monto</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Apa</Text>
+
             <Text style={[styles.cell, styles.headerCell]}>Fecha</Text>
             <Text style={[styles.cell, styles.headerCell]}>Estado</Text>
             <Text style={[styles.cell, styles.headerCell, styles.lastCell]}></Text>
@@ -176,16 +235,18 @@ const Pagosadmin = () => {
                   <Text style={styles.cellText}>{pago.pagoPor}</Text>
                 </TouchableOpacity>
                 <Text style={styles.cell}>{pago.apart}</Text>
-                <Text style={styles.cell}>${pago.cantidad.toFixed(2)}</Text>
+
                 <Text style={styles.cell}>{new Date(pago.fechaPago).toLocaleDateString()}</Text>
-                <Text
-                  style={[
-                    styles.cell,
-                    { color: getEstadoColor(pago.estado), fontWeight: 'bold' }
-                  ]}
-                >
-                  {pago.estado}
+                <TouchableOpacity 
+                style={styles.cell}
+                onPress={() => showEstadoSelector(pago.idPagos, pago.estado)}
+              >
+                <Text style={[
+                  { color: getEstadoColor(pago.estado), fontWeight: 'bold' }
+                ]}>
+                  {pago.estado} ▼
                 </Text>
+              </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.cell, styles.lastCell, styles.deleteButton]}
                   onPress={() => confirmDelete(pago.idPagos)}
@@ -200,28 +261,14 @@ const Pagosadmin = () => {
             </View>
           )}
         </View>
+        <TouchableOpacity 
+        style={styles.insertButton}
+        onPress={() => navigation.navigate('NuevoPago')}
+      >
+        <Text style={styles.insertButtonText}>Insertar un pago</Text>
+      </TouchableOpacity>
 
-        <View style={styles.resumenContainer}>
-          <Text style={styles.resumenTitle}>Resumen de Pagos</Text>
-          <View style={styles.resumenItem}>
-            <Text style={[styles.headerCell]}>Total Pagado:</Text>
-            <Text style={[styles.resumenMonto, styles.headerCell]}>
-              ${pagos.filter(p => p.estado === 'Pagado').reduce((sum, p) => sum + p.cantidad, 0).toFixed(2)}
-            </Text>
-          </View>
-          <View style={styles.resumenItem}>
-            <Text style={[styles.headerCell]}>Pendientes:</Text>
-            <Text style={[styles.resumenMonto, styles.headerCell]}>
-              ${pagos.filter(p => p.estado === 'Pendiente').reduce((sum, p) => sum + p.cantidad, 0).toFixed(2)}
-            </Text>
-          </View>
-          <View style={styles.resumenItem}>
-            <Text style={[styles.headerCell]}>Vencidos:</Text>
-            <Text style={[styles.resumenMonto, styles.headerCell]}>
-              ${pagos.filter(p => p.estado === 'Vencido').reduce((sum, p) => sum + p.cantidad, 0).toFixed(2)}
-            </Text>
-          </View>
-        </View>
+   
       </ScrollView>
 
       <View style={styles.bottomNav}>
@@ -300,7 +347,7 @@ const styles = StyleSheet.create({
     color: '#072b0d',
   },
   Text: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -323,20 +370,22 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
-    padding: 10,
+    padding: 4,
     textAlign: 'center',
     justifyContent: 'center',
+    fontSize: 14,
   },
   cellTouchable: {
     flex: 1,
-    padding: 10,
+    padding: 7,
     justifyContent: 'center',
   },
   cellText: {
     textAlign: 'center',
+    fontSize: 11,
   },
   firstCell: {
-    flex: 2,
+    flex: 3,
     textAlign: 'left',
   },
   lastCell: {
@@ -363,7 +412,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   resumenTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 12,
     color: '#fff',
@@ -414,6 +463,19 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     marginTop: 10,
+  },
+  insertButton: {
+    backgroundColor: '#1d4a1d',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  insertButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

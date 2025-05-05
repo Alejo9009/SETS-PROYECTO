@@ -172,22 +172,22 @@ const DatosUsuarios = () => {
                             <ScrollView horizontal={true}>
                                 <View>
                                     <View style={styles.tableHeader}>
-                                        <Text style={[styles.headerText, styles.smallColumn]}>N°</Text>
+                                        <Text style={[styles.headerText, styles.smallColumn]}>N° </Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Rol</Text>
-                                        <Text style={[styles.headerText, styles.mediumColumn]}>Documento</Text>
+                                        <Text style={[styles.headerText, styles.mediumColumn]}>Numero de Documento</Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Nombre</Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Apellido</Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Apartamento</Text>
                                         <Text style={[styles.headerText, styles.largeColumn]}>Correo</Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Teléfono</Text>
-                                        <Text style={[styles.headerText, styles.mediumColumn]}>Tipo</Text>
+                                        <Text style={[styles.headerText, styles.mediumColumn]}>Tipo de propietario</Text>
                                         <Text style={[styles.headerText, styles.mediumColumn]}>Usuario</Text>
                                         <Text style={[styles.headerText, styles.smallColumn]}>Acción</Text>
                                     </View>
 
                                     {filteredUsuarios.map((usuario, index) => (
                                         <View key={usuario.id_Registro} style={styles.tableRow}>
-                                            <Text style={[styles.cellText, styles.smallColumn]}>{index + 1}</Text>
+                                            <Text style={[styles.cellText, styles.smallColumn]}>{usuario.id_Registro}</Text>
                                             <Text style={[styles.cellText, styles.mediumColumn]}>{usuario.Roldescripcion}</Text>
                                             <Text style={[styles.cellText, styles.mediumColumn]}>{usuario.numeroDocumento}</Text>
                                             <Text style={[styles.cellText, styles.mediumColumn]}>{usuario.PrimerNombre}</Text>

@@ -71,7 +71,7 @@ const DetallePago: React.FC<DetallePagoProps> = ({ route }) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Monto:</Text>
             <Text style={[styles.sectionText, styles.amountText]}>
-              ${typeof pago.cantidad === 'number' ? pago.cantidad.toFixed(2) : '0.00'}
+              ${ pago.cantidad  }
             </Text>
           </View>
 

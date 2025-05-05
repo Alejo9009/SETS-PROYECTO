@@ -273,7 +273,6 @@ const Citasadmin: React.FC<{ navigation: StackNavigationProp<RootStackParamList,
                 {selectedDate ? `Mostrando citas del ${selectedDate}` : 'Todas las citas'}
               </Text>
             </View>
-
             <TouchableOpacity
               onPress={() => setCalendarVisible(!calendarVisible)}
               style={styles.calendarButton}
@@ -792,7 +791,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#ab140c',
     marginRight: 10,
   },
   sendButton: {

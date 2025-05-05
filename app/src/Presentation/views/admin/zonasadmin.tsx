@@ -106,7 +106,7 @@ const ZonasComunesadmin = () => {
 
 
       const dots = [];
-      if (counts.ACEPTADA > 1) dots.push({ key: 'ACEPTADA', color: '#031404' });
+      if (counts.ACEPTADA > 1) dots.push({ key: 'ACEPTADA', color: '#072104' });
       if (counts.PENDIENTE > 2) dots.push({ key: 'PENDIENTE', color: '#decb00' });
       if (counts.RECHAZADA > 0) dots.push({ key: 'RECHAZADA', color: '#F44336' });
 
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   solicitudItem: {
-    backgroundColor: '#041a05',
+    backgroundColor: '#0d4706',
     borderRadius: 8,
     padding: 15,
     marginBottom: 12,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   },
   estadoACEPTADA: {
     borderLeftWidth: 5,
-    borderLeftColor: '#4CAF50',
+    borderLeftColor: '#072104',
   },
   estadoPENDIENTE: {
     borderLeftWidth: 5,
