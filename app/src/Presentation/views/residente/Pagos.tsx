@@ -160,8 +160,7 @@ const Pagos = () => {
         <View style={styles.table}>
           <View style={[styles.row, styles.headerRow]}>
             <Text style={[styles.cell, styles.headerCell, styles.firstCell]}>Tipo</Text>
-            <Text style={[styles.cell, styles.headerCell]}>Aparta</Text>
-            <Text style={[styles.cell, styles.headerCell]}>Valor</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Apa</Text>
             <Text style={[styles.cell, styles.headerCell]}>Fecha</Text>
             <Text style={[styles.cell, styles.headerCell]}>Estado</Text>
             <Text style={[styles.cell, styles.headerCell, styles.lastCell]}></Text>
@@ -190,7 +189,7 @@ const Pagos = () => {
                   <Text style={styles.cellText}>{pago.pagoPor}</Text>
                 </TouchableOpacity>
                 <Text style={styles.cell}>{pago.apart}</Text>
-                <Text style={styles.cell}>${pago.cantidad.toFixed(2)}</Text>
+
                 <Text style={styles.cell}>{new Date(pago.fechaPago).toLocaleDateString()}</Text>
                 <Text
                   style={[
@@ -326,7 +325,7 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
-    padding: 10,
+    padding: 6,
     textAlign: 'center',
     justifyContent: 'center',
   },

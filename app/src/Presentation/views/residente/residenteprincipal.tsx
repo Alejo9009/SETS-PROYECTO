@@ -19,6 +19,7 @@ type Anuncio = {
   img_anuncio: string;
 };
 
+
 const ResidentePrincipal = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
@@ -54,6 +55,12 @@ const ResidentePrincipal = () => {
         <Text style={styles.noticiaFecha}>
           {new Date(item.fechaPublicacion).toLocaleDateString()} - {item.horaPublicacion}
         </Text>
+        <TouchableOpacity
+          onPress={() => eliminarAnuncio(item.idAnuncio)}
+          style={styles.deleteButton}
+        >
+          <FontAwesome name="trash" size={26} color="#ff6b6b" />
+        </TouchableOpacity>
       </View>
       <Text style={styles.noticiaResumen}>{item.descripcion}</Text>
 
@@ -75,6 +82,35 @@ const ResidentePrincipal = () => {
               navigation.replace('HomeScreen');
             } catch (error) {
               console.error('Error al cerrar sesión:', error);
+            }
+          }
+        }
+      ]
+    );
+  };
+  const eliminarAnuncio = async (idAnuncio: number) => {
+    Alert.alert(
+      'Eliminar anuncio',
+      '¿Estás seguro de que deseas eliminar este anuncio?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          onPress: async () => {
+            try {
+              const response = await fetch(`http://192.168.1.105:3001/api/elanuncios/${idAnuncio}`, {
+                method: 'DELETE'
+              });
+
+              if (!response.ok) {
+                throw new Error('Error al eliminar el anuncio');
+              }
+
+              setAnuncios(prev => prev.filter(anuncio => anuncio.idAnuncio !== idAnuncio));
+              Alert.alert('Éxito', 'Anuncio eliminado correctamente');
+            } catch (error) {
+              console.error('Error al eliminar anuncio:', error);
+              Alert.alert('Error', 'No se pudo eliminar el anuncio');
             }
           }
         }
@@ -185,7 +221,12 @@ const ResidentePrincipal = () => {
               scrollEnabled={false}
             />
           )}
-
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Anunciosresi')}
+          >
+            <Text style={styles.asectionTitle}>Ingresar Anuncios</Text>
+          </TouchableOpacity>
         </View>
 
 
@@ -208,7 +249,7 @@ const ResidentePrincipal = () => {
           style={styles.navItem}
           onPress={() => navigation.navigate('Pagos')}
         >
-           <FontAwesome name="money" size={24} color="#fff" />
+          <FontAwesome name="money" size={24} color="#fff" />
           <Text style={styles.navText}>Pagos</Text>
         </TouchableOpacity>
 
@@ -413,7 +454,22 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     marginTop: 10,
   },
-
+  deleteButton: {
+    marginLeft: 23,
+    padding: 1,
+  },
+  asectionTitle: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  actionButton: {
+    backgroundColor: '#1e871e',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
 });
 
 export default ResidentePrincipal;
