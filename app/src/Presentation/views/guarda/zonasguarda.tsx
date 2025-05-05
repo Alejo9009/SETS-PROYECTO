@@ -106,7 +106,7 @@ const Zonasguarda = () => {
 
 
       const dots = [];
-      if (counts.ACEPTADA > 1) dots.push({ key: 'ACEPTADA', color: '#031404' });
+      if (counts.ACEPTADA > 1) dots.push({ key: 'ACEPTADA', color: '#0c4d0f' });
       if (counts.PENDIENTE > 2) dots.push({ key: 'PENDIENTE', color: '#decb00' });
       if (counts.RECHAZADA > 0) dots.push({ key: 'RECHAZADA', color: '#F44336' });
 
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   solicitudItem: {
-    backgroundColor: '#041a05',
+    backgroundColor: '#0b400d',
     borderRadius: 8,
     padding: 15,
     marginBottom: 12,
@@ -454,6 +454,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    color: '#0b400d'
   },
   estadoACEPTADA: {
     borderLeftWidth: 5,
